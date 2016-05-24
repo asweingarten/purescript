@@ -8,6 +8,7 @@ import Control.Monad.State.Trans
 import Control.Monad.State.Class
 
 import Node.ReadLine (READLINE)
+import Node.SimpleRepl (setPrompt, readLine, runRepl, putStrLn)
 
 import Types
 
@@ -16,15 +17,25 @@ type Game e = StateT Board (UI e)
 
 gameState :: forall e. Game e String
 gameState = do
-  liftEff (log "Yo")
+  liftEff $ runRepl do
+    setPrompt "> "
+    putStrLn "Connect 4"
+    putStrLn ":q to quit"
+    loop
   (z :: Board) <- get
   modify (addPiece Red 1)
   return "Dawgs"
-
+ where
+  loop = do
+    res <- readLine
+    case res of
+         ":q" -> pure unit
+         _ -> do
+           putStrLn res
+           loop
 
 addPiece :: Space -> Int -> Board -> Board
-addPiece move col board =
-  board
+addPiece move col board = board
 
 myInitialState :: Board
 myInitialState = [[],[],[],[],[],[],[],[]]

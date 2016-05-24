@@ -23,23 +23,6 @@ board = [[Red, Red, Red, Red],
          [Red, Black, Black, Red]]
 
 
-main :: forall e. Eff (console :: CONSOLE, readline :: READLINE | e) Unit
-main =do
-
+main :: forall e. UI e String
+main = do
  runMyShit
- runRepl do
-  {- log (show Red)
-  log (show Black)
-  traverse_ (log <<< foldMap ((_ ++ " ") <<< show)) board -}
-  setPrompt "> "
-  putStrLn "Connect 4"
-  putStrLn ":q to quit"
-  loop
-    where
-      loop = do
-        res <- readLine
-        case res of
-             ":q" -> pure unit
-             _ -> do
-               putStrLn res
-               loop
