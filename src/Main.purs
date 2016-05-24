@@ -12,6 +12,7 @@ import Node.ReadLine (READLINE)
 import Node.SimpleRepl (setPrompt, readLine, runRepl, putStrLn)
 
 import Types (Board, Column, Space (..))
+import GameState
 
 col :: Column
 col = [Red, Red, Black]
@@ -23,7 +24,10 @@ board = [[Red, Red, Red, Red],
 
 
 main :: forall e. Eff (console :: CONSOLE, readline :: READLINE | e) Unit
-main = runRepl do
+main =do
+
+ runMyShit
+ runRepl do
   {- log (show Red)
   log (show Black)
   traverse_ (log <<< foldMap ((_ ++ " ") <<< show)) board -}
