@@ -11,13 +11,7 @@ import Data.Maybe
 import Node.ReadLine (READLINE)
 import Node.SimpleRepl (setPrompt, readLine, runRepl, putStrLn)
 
-type Board = Array Column
-type Column = Array Space
-data Space = Red | Black
-
-instance showSpace :: Show Space where
-  show Red = " Red "
-  show Black = "Black"
+import Types (Board, Column, Space (..))
 
 col :: Column
 col = [Red, Red, Black]
