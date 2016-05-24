@@ -6,6 +6,8 @@ import Control.Monad.Eff.Console (CONSOLE, log, print)
 import Control.Monad.State.Trans
 import Control.Monad.Eff.Class
 
+import Control.Bind
+
 import Data.Tuple
 import Data.Maybe
 import Data.List
@@ -25,15 +27,18 @@ gameState = do
   where
     loop = do
       input <- liftEff readLine
-      --liftEff $ log input
       let move = parseMove input
       case move of
            Nothing -> loop
            Just (Tuple space column) -> modify (addPiece space column)
       (board :: Board) <- get
-      liftEff $ traverse_ print board
+      liftEff $ traverse_ (log <<< printCol) board
       -- if !winner
       loop
+
+printCol :: Column -> String
+printCol col =
+  foldMap show col
 
 parseMove :: String -> Maybe (Tuple Space Int)
 parseMove move = do
@@ -57,8 +62,6 @@ addPiece move 0 board =
   maybe (Nil) (pure <<< flip snoc move) (head board) ++ drop 1 board
 addPiece move col board =
   maybe (Nil) (pure) (head board) ++ addPiece move (col-1) (drop 1 board)
-{-- addPiece move col board = --}
-{--   head board ++ addPiece move (col-1) (drop 1 board) --}
 
 myInitialState :: Board
 myInitialState = replicate 8 Nil
