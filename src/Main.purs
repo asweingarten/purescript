@@ -11,7 +11,7 @@ import Data.Maybe
 import Node.ReadLine (READLINE)
 import Node.SimpleRepl (setPrompt, readLine, runRepl, putStrLn)
 
-import Types (Board, Column, Space (..))
+import Types (UI, Game, Board, Column, Space (..))
 import GameState
 
 col :: Column
