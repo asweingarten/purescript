@@ -13,10 +13,11 @@ import Data.Generic
 import Data.List
 
 type UI e = Eff (console :: CONSOLE | e)
-type Game e = StateT Board (UI e)
+type Game e = StateT (Board Move) (UI e)
 
-type Board = List Column
-type Column = List Move
+type Board a = List (Column a)
+
+type Column a = List a
 data Move = Red | Black
 derive instance genericMove :: Generic Move
 
