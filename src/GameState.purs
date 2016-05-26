@@ -6,6 +6,8 @@ import Control.Monad.Eff.Console (CONSOLE, log, print)
 import Control.Monad.State.Trans
 import Control.Monad.Eff.Class
 
+import Control.Alt
+
 import Control.Bind
 
 import Data.Tuple
@@ -20,24 +22,26 @@ import ReadLine
 
 gameState :: forall e. Game e String
 gameState = do
-    loop
-    move <- liftEff $ readLine
-    liftEff $ log move
-    return "Congrats someone won"
+    winner <- loop
+    return ("Congrats " ++ winner ++ " won")
   where
+    loop :: forall e. Game e String
     loop = do
       input <- liftEff readLine
-      let move = parseInput input
-      case move of
-           Nothing -> loop
-           Just (Tuple space column) -> modify (addPiece space column)
+      case parseInput input of
+        Nothing -> void loop
+        Just (Tuple space column) -> modify (addPiece space column)
       (board :: Board) <- get
       liftEff $ traverse_ (log <<< printCol) board
-      -- if !winner
-      loop
+      case hasWinner board of
+        Nothing -> loop
+        Just winner -> return (show winner)
 
 hasWinner :: Board -> Maybe Move
-hasWinner board = Just Red
+hasWinner board =
+  let verticalWinner = head (mapMaybe hasFourInRow board)
+      horizontalWinner = head (mapMaybe hasFourInRow (transpose board))
+  in verticalWinner <|> horizontalWinner
 
 hasFourInRow :: List Move -> Maybe Move
 hasFourInRow moves =
@@ -79,6 +83,6 @@ myInitialState = replicate 8 Nil
 
 runMyShit :: forall e. UI e String
 runMyShit = do
-  result <- runStateT gameState myInitialState
-  return ""
+  result <- fst <$> runStateT gameState myInitialState
+  return result
 
