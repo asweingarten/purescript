@@ -27,7 +27,7 @@ gameState = do
   where
     loop = do
       input <- liftEff readLine
-      let move = parseMove input
+      let move = parseInput input
       case move of
            Nothing -> loop
            Just (Tuple space column) -> modify (addPiece space column)
@@ -36,19 +36,30 @@ gameState = do
       -- if !winner
       loop
 
+hasWinner :: Board -> Maybe Move
+hasWinner board = Just Red
+
+hasFourInRow :: List Move -> Maybe Move
+hasFourInRow moves =
+  let streaks = groupBy (==) moves
+  in
+    case find (\s -> length s == 4) streaks of
+       Nothing -> Nothing
+       Just streak -> head streak
+
 printCol :: Column -> String
 printCol col =
   foldMap show col
 
-parseMove :: String -> Maybe (Tuple Space Int)
-parseMove move = do
+parseInput :: String -> Maybe (Tuple Move Int)
+parseInput move = do
   let moveWords = words move
-  space <- (head moveWords) >>= parseSpace
+  space <- (head moveWords) >>= parseMove
   position <- (last moveWords) >>= parsePosition
   return $ Tuple space position
 
-parseSpace :: String -> Maybe Space
-parseSpace s = case s of
+parseMove :: String -> Maybe Move
+parseMove s = case s of
                  "Red" -> Just Red
                  "Black" -> Just Black
                  _ -> Nothing
@@ -56,7 +67,7 @@ parseSpace s = case s of
 parsePosition :: String -> Maybe Int
 parsePosition s = fromString s
 
-addPiece :: Space -> Int -> Board -> Board
+addPiece :: Move -> Int -> Board -> Board
 addPiece _ _ Nil = Nil
 addPiece move 0 board =
   maybe (Nil) (pure <<< flip snoc move) (head board) ++ drop 1 board

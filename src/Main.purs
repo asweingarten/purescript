@@ -4,11 +4,8 @@ import Prelude
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log, print)
 
-import Node.ReadLine (READLINE)
-import Node.SimpleRepl (setPrompt, readLine, runRepl, putStrLn)
-
-import Types (UI, Game, Board, Column, Space (..))
-import GameState
+import Types (UI, Game, Board, Column, Move (..))
+import GameState (runMyShit)
 
 main :: forall e. UI e String
 main = do
