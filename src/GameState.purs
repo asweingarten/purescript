@@ -6,18 +6,17 @@ import Control.Monad.Eff.Console (CONSOLE, log, print)
 import Control.Monad.State.Trans
 import Control.Monad.Eff.Class
 
-import Control.Alt
 import Control.Bind
+import Control.Alt
 
 import Data.Tuple
 import Data.Maybe
 import Data.List
-import Data.List.WordsLines
-import Data.Int
 import Data.Foldable
 
 import Types
-import ReadLine
+import Input (parseInput)
+import ReadLine (readLine)
 
 gameState :: forall e. Game e String
 gameState = do
@@ -82,22 +81,6 @@ padColumns padHeight board =
 printCol :: Column Move -> String
 printCol col =
   foldMap show col
-
-parseInput :: String -> Maybe (Tuple Move Int)
-parseInput move = do
-  let moveWords = words move
-  space <- (head moveWords) >>= parseMove
-  position <- (last moveWords) >>= parsePosition
-  return $ Tuple space position
-
-parseMove :: String -> Maybe Move
-parseMove s = case s of
-                 "Red" -> Just Red
-                 "Black" -> Just Black
-                 _ -> Nothing
-
-parsePosition :: String -> Maybe Int
-parsePosition s = fromString s
 
 addPiece :: Move -> Int -> Board Move -> Board Move
 addPiece _ _ Nil = Nil
