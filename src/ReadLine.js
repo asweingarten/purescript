@@ -5,7 +5,7 @@
 var prompt = require('prompt-sync')();
 
 exports.readLine = function() {
-  return prompt('make a move... bitch: ', 'Red 1');
+  return prompt('make a move: ', 'Red 1');
 };
 
 

@@ -22,7 +22,7 @@ data Move = Red | Black
 derive instance genericMove :: Generic Move
 
 instance showMove :: Show Move where
-  show Red = " Red "
+  show Red   = " Red "
   show Black = "Black"
 
 instance eqMove :: Eq Move where
