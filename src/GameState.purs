@@ -16,6 +16,7 @@ import Data.Foldable
 
 import Types
 import Input (parseInput)
+import Output (printBoard)
 import ReadLine (readLine)
 
 gameState :: forall e. Game e String
@@ -30,7 +31,7 @@ gameState = do
         Nothing -> void loop
         Just (Tuple space column) -> modify (addPiece space column)
       (board :: Board Move) <- get
-      liftEff $ traverse_ (log <<< printCol) board
+      liftEff $ printBoard board
       case findWinner board of
         Nothing -> loop
         Just winner -> return (show winner)
@@ -77,10 +78,6 @@ padColumns padHeight board =
       paddedTail = (padColumns (padHeight - 1) t)
    in
       paddedHead : paddedTail
-
-printCol :: Column Move -> String
-printCol col =
-  foldMap show col
 
 addPiece :: Move -> Int -> Board Move -> Board Move
 addPiece _ _ Nil = Nil
